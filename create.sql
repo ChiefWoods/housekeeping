@@ -38,7 +38,7 @@ CREATE TABLE employee (
   state VARCHAR(32),
   postcode NUMBER(5),
   phone_number VARCHAR(32) NOT NULL,
-  salary NUMBER(*, 2) NOT NULL CONSTRAINT check_salary CHECK (salary >= 1500),
+  salary FLOAT(2) NOT NULL CONSTRAINT check_salary CHECK (salary >= 1500),
   service_hours NUMBER(4) NOT NULL,
   commission_rate FLOAT(2) NOT NULL,
 );
