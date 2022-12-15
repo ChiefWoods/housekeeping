@@ -7,7 +7,7 @@ CREATE TABLE customer (
   first_name VARCHAR(32) NOT NULL,
   last_name VARCHAR(32) NOT NULL,
   gender CHAR CONSTRAINT check_customer_gender CHECK (gender in ('M', 'F')),
-  phone_number VARCHAR(32) NOT NULL,
+  phone_number VARCHAR(32) NOT NULL CONSTRAINT unique_customer_number UNIQUE,
 );
 
 CREATE TABLE house (
@@ -37,7 +37,7 @@ CREATE TABLE employee (
   town VARCHAR(32),
   state VARCHAR(32),
   postcode NUMBER(5),
-  phone_number VARCHAR(32) NOT NULL,
+  phone_number VARCHAR(32) NOT NULL CONSTRAINT unique_employee_number UNIQUE,
   salary FLOAT(2) NOT NULL CONSTRAINT check_salary CHECK (salary >= 1500),
   service_hours NUMBER(4) NOT NULL,
   commission_rate FLOAT(2) NOT NULL,
@@ -49,12 +49,11 @@ CREATE TABLE supervisor (
   first_name VARCHAR(32) NOT NULL,
   last_name VARCHAR(32) NOT NULL,
   gender CHAR CONSTRAINT check_supervisor_gender CHECK (gender in ('M', 'F')),
-  phone_number VARCHAR(32) NOT NULL,
+  phone_number VARCHAR(32) NOT NULL CONSTRAINT unique_supervisor_number UNIQUE,
 );
 
 CREATE TABLE gift (
   gift_id NUMBER(4) PRIMARY KEY,
-  customer_id NUMBER(4) FOREIGN KEY REFERENCES customer(customer_id),
   gift_type VARCHAR(64) NOT NULL,
   gift_price NUMBER(*, 2) NOT NULL,
 );
