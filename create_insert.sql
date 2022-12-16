@@ -1,9 +1,9 @@
+DROP TABLE service;
 DROP TABLE house;
 DROP TABLE customer;
-DROP TABLE gift;
-DROP TABLE service;
 DROP TABLE employee;
 DROP TABLE supervisor;
+DROP TABLE gift;
 
 CREATE TABLE gift (
   gift_id NUMBER(4) PRIMARY KEY,
@@ -36,12 +36,6 @@ CREATE TABLE employee (
   commission_rate FLOAT(2) NOT NULL
 );
 
-CREATE TABLE service (
-  service_id NUMBER(4) PRIMARY KEY,
-  supervisor_id NUMBER(4), FOREIGN KEY (supervisor_id) REFERENCES supervisor(supervisor_id),
-  service_date DATE NOT NULL
-);
-
 CREATE TABLE customer (
   customer_id NUMBER(4) PRIMARY KEY,
   gift_id NUMBER(4), FOREIGN KEY (gift_id) REFERENCES gift(gift_id),
@@ -54,13 +48,19 @@ CREATE TABLE customer (
 CREATE TABLE house (
   house_id NUMBER(4) PRIMARY KEY,
   customer_id NUMBER(4), FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
-  service_id NUMBER(4), FOREIGN KEY (service_id) REFERENCES service(service_id),
   house_type NCHAR(2) NOT NULL, CONSTRAINT check_house_type CHECK (house_type IN ('CD', 'AP', 'SD', 'BG')),
   street VARCHAR(256),
   city VARCHAR(32) NOT NULL,
   town VARCHAR(32) NOT NULL,
   state VARCHAR(32) NOT NULL, CONSTRAINT check_house_state CHECK (state IN ('Selangor')),
   postcode NUMBER(5) NOT NULL
+);
+
+CREATE TABLE service (
+  service_id NUMBER(4) PRIMARY KEY,
+  house_id NUMBER(4), FOREIGN KEY (house_id) REFERENCES house(house_id),
+  supervisor_id NUMBER(4), FOREIGN KEY (supervisor_id) REFERENCES supervisor(supervisor_id),
+  service_date DATE NOT NULL
 );
 
 ALTER session set NLS_DATE_FORMAT = 'DD/MM/YYYY';
@@ -127,27 +127,6 @@ INSERT INTO employee VALUES (2103, 2010, 'Louisa', 'Carpenter', 'F', 'PT 7259, I
 INSERT INTO employee VALUES (2104, 2020, 'Deborah', 'Hill', 'F', '39, Jalan Anggerik 5d/1', 'Gombak', 'Rawang', 'Selangor', 48300, '018-3382123', 1850, 20, 25);
 INSERT INTO employee VALUES (2105, 2020, 'Cohen', 'Trevino', 'M', '91, Jalan Desa 1/7', 'Bandar Country Homes', 'Rawang', 'Selangor', 48000, '019-5957572', 1600, 20, 25);
 
-INSERT INTO service VALUES (7021, 2010, '02/02/2022');
-INSERT INTO service VALUES (7022, 2020, '06/03/2022');
-INSERT INTO service VALUES (7023, 2030, '16/03/2022');
-INSERT INTO service VALUES (7024, 2040, '05/05/2022');
-INSERT INTO service VALUES (7025, 2050, '16/07/2022');
-INSERT INTO service VALUES (7026, 2060, '21/08/2022');
-INSERT INTO service VALUES (7027, 2070, '26/09/2022');
-INSERT INTO service VALUES (7028, 2080, '23/10/2022');
-INSERT INTO service VALUES (7029, 2090, '04/11/2022');
-INSERT INTO service VALUES (7030, 2100, '27/11/2022');
-INSERT INTO service VALUES (7031, 2110, '03/01/2022');
-INSERT INTO service VALUES (7032, 2120, '04/01/2022');
-INSERT INTO service VALUES (7033, 2130, '24/10/2022');
-INSERT INTO service VALUES (7034, 2140, '17/02/2022');
-INSERT INTO service VALUES (7035, 2150, '11/07/2022');
-INSERT INTO service VALUES (7036, 2020, '29/11/2022');
-INSERT INTO service VALUES (7037, 2040, '24/09/2022');
-INSERT INTO service VALUES (7038, 2060, '02/09/2022');
-INSERT INTO service VALUES (7039, 2080, '16/04/2022');
-INSERT INTO service VALUES (7040, 2100, '08/08/2022');
-
 INSERT INTO customer VALUES (8001, 6001, 'Levi', 'Young', 'M', '012-3872543');
 INSERT INTO customer VALUES (8002, 6002, 'Emma', 'Sanchez', 'F', '017-2930451');
 INSERT INTO customer VALUES (8003, 6003, 'Daniel', 'Hill', 'M', '014-2394622');
@@ -159,23 +138,44 @@ INSERT INTO customer VALUES (8008, 6008, 'Elissa', 'Cruz', 'F', '014-2823661');
 INSERT INTO customer VALUES (8009, 6009, 'Bruce', 'Hansen', 'M', '019-2936352');
 INSERT INTO customer VALUES (8010, 6010, 'Suzanne', 'Hogan', 'F', '012-3836212');
 
-INSERT INTO house VALUES (3071, 8001, 7021, 'CD', 'Palmville Resort Condominium, 3, Jalan Lagoon Timur (9/1)', 'Bandar Sunway', 'Subang Jaya', 'Selangor', 47500);
-INSERT INTO house VALUES (3072, 8005, 7022, 'AP', 'Jalan PJS 11/6', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47500);
-INSERT INTO house VALUES (3073, 8002, 7023, 'SD', 'One Park USJ', 'Bandar Sunway', 'Subang Jaya', 'Selangor', 40150);
-INSERT INTO house VALUES (3074, 8003, 7024, 'BG', 'Lakeview Bungalows, 43A, Saujana Resort', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
-INSERT INTO house VALUES (3075, 8006, 7025, 'SD', 'Persiaran Mimbar', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
-INSERT INTO house VALUES (3076, 8007, 7026, 'AP', 'Pangsapuri Lagoon Perdana, Jalan PJS 9/1', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47500);
-INSERT INTO house VALUES (3077, 8008, 7027, 'CD', 'G1, Impian Meridian Condominium, Jalan Subang 1', 'USJ 1', 'Subang Jaya', 'Selangor', 47600);
-INSERT INTO house VALUES (3078, 8009, 7028, 'AP', 'Jalan PJS 10/11A', 'PJS 10', 'Petaling Jaya', 'Selangor', 46150);
-INSERT INTO house VALUES (3079, 8010, 7029, 'SD', '4, Jalan Aman Perdana 3c/Ku5', 'Aman Perdana', 'Klang', 'Selangor', 42200);
-INSERT INTO house VALUES (3080, 8004, 7030, 'BG', '2, Persiaran Titiwangsa, Titiwangsa', 'Kuala Lumpur', 'Titwangsa', 'Selangor', 53200);
-INSERT INTO house VALUES (3081, 8008, 7031, 'SD', 'Jalan 13/1 Seksyen 13', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 46200);
-INSERT INTO house VALUES (3082, 8005, 7032, 'BG', 'C-05-02, Utropolis Suites, Jalan Kontraktor U1/14, Seksyen U1', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
-INSERT INTO house VALUES (3083, 8001, 7033, 'AP', 'A-21-06, The Arc Persiaran Bestari', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
-INSERT INTO house VALUES (3084, 8004, 7034, 'CD', 'Sunway Gandaria Residences', 'Hulu Langat', 'Bangi', 'Selangor', 43650);
-INSERT INTO house VALUES (3085, 8009, 7035, 'SD', 'Lingkaran Cyber Point Timur, Cyber 12', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
-INSERT INTO house VALUES (3086, 8007, 7036, 'SD', 'Jalan PJU 8/8A', 'Damansara Perdana', 'Petaling Jaya', 'Selangor', 47820);
-INSERT INTO house VALUES (3087, 8003, 7037, 'CD', 'Saville Cheras No.1, Persiaran Sri Raya, Taman Sri Raya', 'Hulu Langat', 'Cheras', 'Selangor', 43200);
-INSERT INTO house VALUES (3088, 8006, 7038, 'SD', 'Jalan Teknokrat 7', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
-INSERT INTO house VALUES (3089, 8010, 7039, 'AP', 'No. 2 Jalan Setia Dagang', 'Setia Alam', 'Shah Alam', 'Selangor', 40170);
-INSERT INTO house VALUES (3090, 8002, 7040, 'BG', 'Pusat Perdagangan Icon City, No 1B, Jalan SS8/39, SS8', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47300);
+INSERT INTO house VALUES (3071, 8001, 'CD', 'Palmville Resort Condominium, 3, Jalan Lagoon Timur (9/1)', 'Bandar Sunway', 'Subang Jaya', 'Selangor', 47500);
+INSERT INTO house VALUES (3072, 8005, 'AP', 'Jalan PJS 11/6', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47500);
+INSERT INTO house VALUES (3073, 8002, 'SD', 'One Park USJ', 'Bandar Sunway', 'Subang Jaya', 'Selangor', 40150);
+INSERT INTO house VALUES (3074, 8003, 'BG', 'Lakeview Bungalows, 43A, Saujana Resort', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
+INSERT INTO house VALUES (3075, 8006, 'SD', 'Persiaran Mimbar', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
+INSERT INTO house VALUES (3076, 8007, 'AP', 'Pangsapuri Lagoon Perdana, Jalan PJS 9/1', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47500);
+INSERT INTO house VALUES (3077, 8008, 'CD', 'G1, Impian Meridian Condominium, Jalan Subang 1', 'USJ 1', 'Subang Jaya', 'Selangor', 47600);
+INSERT INTO house VALUES (3078, 8009, 'AP', 'Jalan PJS 10/11A', 'PJS 10', 'Petaling Jaya', 'Selangor', 46150);
+INSERT INTO house VALUES (3079, 8010, 'SD', '4, Jalan Aman Perdana 3c/Ku5', 'Aman Perdana', 'Klang', 'Selangor', 42200);
+INSERT INTO house VALUES (3080, 8004, 'BG', '2, Persiaran Titiwangsa, Titiwangsa', 'Kuala Lumpur', 'Titwangsa', 'Selangor', 53200);
+INSERT INTO house VALUES (3081, 8008, 'SD', 'Jalan 13/1 Seksyen 13', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 46200);
+INSERT INTO house VALUES (3082, 8005, 'BG', 'C-05-02, Utropolis Suites, Jalan Kontraktor U1/14, Seksyen U1', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
+INSERT INTO house VALUES (3083, 8001, 'AP', 'A-21-06, The Arc Persiaran Bestari', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
+INSERT INTO house VALUES (3084, 8004, 'CD', 'Sunway Gandaria Residences', 'Hulu Langat', 'Bangi', 'Selangor', 43650);
+INSERT INTO house VALUES (3085, 8009, 'SD', 'Lingkaran Cyber Point Timur, Cyber 12', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
+INSERT INTO house VALUES (3086, 8007, 'SD', 'Jalan PJU 8/8A', 'Damansara Perdana', 'Petaling Jaya', 'Selangor', 47820);
+INSERT INTO house VALUES (3087, 8003, 'CD', 'Saville Cheras No.1, Persiaran Sri Raya, Taman Sri Raya', 'Hulu Langat', 'Cheras', 'Selangor', 43200);
+INSERT INTO house VALUES (3088, 8006, 'SD', 'Jalan Teknokrat 7', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
+INSERT INTO house VALUES (3089, 8010, 'AP', 'No. 2 Jalan Setia Dagang', 'Setia Alam', 'Shah Alam', 'Selangor', 40170);
+INSERT INTO house VALUES (3090, 8002, 'BG', 'Pusat Perdagangan Icon City, No 1B, Jalan SS8/39, SS8', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47300);
+
+INSERT INTO service VALUES (7021, 3071, 2010, '02/02/2022');
+INSERT INTO service VALUES (7022, 3072, 2020, '06/03/2022');
+INSERT INTO service VALUES (7023, 3073, 2030, '16/03/2022');
+INSERT INTO service VALUES (7024, 3074, 2040, '05/05/2022');
+INSERT INTO service VALUES (7025, 3075, 2050, '16/07/2022');
+INSERT INTO service VALUES (7026, 3076, 2060, '21/08/2022');
+INSERT INTO service VALUES (7027, 3077, 2070, '26/09/2022');
+INSERT INTO service VALUES (7028, 3078, 2080, '23/10/2022');
+INSERT INTO service VALUES (7029, 3079, 2090, '04/11/2022');
+INSERT INTO service VALUES (7030, 3080, 2100, '27/11/2022');
+INSERT INTO service VALUES (7031, 3081, 2110, '03/01/2022');
+INSERT INTO service VALUES (7032, 3082, 2120, '04/01/2022');
+INSERT INTO service VALUES (7033, 3083, 2130, '24/10/2022');
+INSERT INTO service VALUES (7034, 3084, 2140, '17/02/2022');
+INSERT INTO service VALUES (7035, 3085, 2150, '11/07/2022');
+INSERT INTO service VALUES (7036, 3086, 2020, '29/11/2022');
+INSERT INTO service VALUES (7037, 3087, 2040, '24/09/2022');
+INSERT INTO service VALUES (7038, 3088, 2060, '02/09/2022');
+INSERT INTO service VALUES (7039, 3089, 2080, '16/04/2022');
+INSERT INTO service VALUES (7040, 3090, 2100, '08/08/2022');
