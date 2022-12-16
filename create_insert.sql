@@ -1,9 +1,9 @@
-DROP TABLE customer;
 DROP TABLE house;
+DROP TABLE customer;
+DROP TABLE gift;
 DROP TABLE service;
 DROP TABLE employee;
 DROP TABLE supervisor;
-DROP TABLE gift;
 
 CREATE TABLE gift (
   gift_id NUMBER(4) PRIMARY KEY,
@@ -42,8 +42,18 @@ CREATE TABLE service (
   service_date DATE NOT NULL
 );
 
+CREATE TABLE customer (
+  customer_id NUMBER(4) PRIMARY KEY,
+  gift_id NUMBER(4), FOREIGN KEY (gift_id) REFERENCES gift(gift_id),
+  first_name VARCHAR(32) NOT NULL,
+  last_name VARCHAR(32) NOT NULL,
+  gender CHAR(1), CONSTRAINT check_customer_gender CHECK (gender IN ('M', 'F')),
+  phone_number VARCHAR(32) NOT NULL
+);
+
 CREATE TABLE house (
   house_id NUMBER(4) PRIMARY KEY,
+  customer_id NUMBER(4), FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
   service_id NUMBER(4), FOREIGN KEY (service_id) REFERENCES service(service_id),
   house_type NCHAR(2) NOT NULL, CONSTRAINT check_house_type CHECK (house_type IN ('CD', 'AP', 'SD', 'BG')),
   street VARCHAR(256),
@@ -51,16 +61,6 @@ CREATE TABLE house (
   town VARCHAR(32) NOT NULL,
   state VARCHAR(32) NOT NULL, CONSTRAINT check_house_state CHECK (state IN ('Selangor')),
   postcode NUMBER(5) NOT NULL
-);
-
-CREATE TABLE customer (
-  customer_id NUMBER(4) PRIMARY KEY,
-  house_id NUMBER(4), FOREIGN KEY (house_id) REFERENCES house(house_id),
-  gift_id NUMBER(4), FOREIGN KEY (gift_id) REFERENCES gift(gift_id),
-  first_name VARCHAR(32) NOT NULL,
-  last_name VARCHAR(32) NOT NULL,
-  gender CHAR(1), CONSTRAINT check_customer_gender CHECK (gender IN ('M', 'F')),
-  phone_number VARCHAR(32) NOT NULL
 );
 
 ALTER session set NLS_DATE_FORMAT = 'DD/MM/YYYY';
@@ -148,44 +148,34 @@ INSERT INTO service VALUES (7038, 2060, '02/09/2022');
 INSERT INTO service VALUES (7039, 2080, '16/04/2022');
 INSERT INTO service VALUES (7040, 2100, '08/08/2022');
 
-INSERT INTO house VALUES (3071, 7021, 'CD', 'Palmville Resort Condominium, 3, Jalan Lagoon Timur (9/1)', 'Bandar Sunway', 'Subang Jaya', 'Selangor', 47500);
-INSERT INTO house VALUES (3072, 7022, 'AP', 'Jalan PJS 11/6', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47500);
-INSERT INTO house VALUES (3073, 7023, 'SD', 'One Park USJ', 'Bandar Sunway', 'Subang Jaya', 'Selangor', 40150);
-INSERT INTO house VALUES (3074, 7024, 'BG', 'Lakeview Bungalows, 43A, Saujana Resort', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
-INSERT INTO house VALUES (3075, 7025, 'SD', 'Persiaran Mimbar', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
-INSERT INTO house VALUES (3076, 7026, 'AP', 'Pangsapuri Lagoon Perdana, Jalan PJS 9/1', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47500);
-INSERT INTO house VALUES (3077, 7027, 'CD', 'G1, Impian Meridian Condominium, Jalan Subang 1', 'USJ 1', 'Subang Jaya', 'Selangor', 47600);
-INSERT INTO house VALUES (3078, 7028, 'AP', 'Jalan PJS 10/11A', 'PJS 10', 'Petaling Jaya', 'Selangor', 46150);
-INSERT INTO house VALUES (3079, 7029, 'SD', '4, Jalan Aman Perdana 3c/Ku5', 'Aman Perdana', 'Klang', 'Selangor', 42200);
-INSERT INTO house VALUES (3080, 7030, 'BG', '2, Persiaran Titiwangsa, Titiwangsa', 'Kuala Lumpur', 'Titwangsa', 'Selangor', 53200);
-INSERT INTO house VALUES (3081, 7031, 'SD', 'Jalan 13/1 Seksyen 13', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 46200);
-INSERT INTO house VALUES (3082, 7032, 'BG', 'C-05-02, Utropolis Suites, Jalan Kontraktor U1/14, Seksyen U1', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
-INSERT INTO house VALUES (3083, 7033, 'AP', 'A-21-06, The Arc Persiaran Bestari', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
-INSERT INTO house VALUES (3084, 7034, 'CD', 'Sunway Gandaria Residences', 'Hulu Langat', 'Bangi', 'Selangor', 43650);
-INSERT INTO house VALUES (3085, 7035, 'SD', 'Lingkaran Cyber Point Timur, Cyber 12', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
-INSERT INTO house VALUES (3086, 7036, 'SD', 'Jalan PJU 8/8A', 'Damansara Perdana', 'Petaling Jaya', 'Selangor', 47820);
-INSERT INTO house VALUES (3087, 7037, 'CD', 'Saville Cheras No.1, Persiaran Sri Raya, Taman Sri Raya', 'Hulu Langat', 'Cheras', 'Selangor', 43200);
-INSERT INTO house VALUES (3088, 7038, 'SD', 'Jalan Teknokrat 7', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
-INSERT INTO house VALUES (3089, 7039, 'AP', 'No. 2 Jalan Setia Dagang', 'Setia Alam', 'Shah Alam', 'Selangor', 40170);
-INSERT INTO house VALUES (3090, 7040, 'BG', 'Pusat Perdagangan Icon City, No 1B, Jalan SS8/39, SS8', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47300);
+INSERT INTO customer VALUES (8001, 6001, 'Levi', 'Young', 'M', '012-3872543');
+INSERT INTO customer VALUES (8002, 6002, 'Emma', 'Sanchez', 'F', '017-2930451');
+INSERT INTO customer VALUES (8003, 6003, 'Daniel', 'Hill', 'M', '014-2394622');
+INSERT INTO customer VALUES (8004, 6004, 'Scarlett', 'Flores', 'F', '019-2735321');
+INSERT INTO customer VALUES (8005, 6005, 'Logan', 'Smith', 'M', '011-2934212');
+INSERT INTO customer VALUES (8006, 6006, 'Cynthia', 'Vanne', 'F', '013-2337362');
+INSERT INTO customer VALUES (8007, 6007, 'Josh', 'Malone', 'M', '017-3736213');
+INSERT INTO customer VALUES (8008, 6008, 'Elissa', 'Cruz', 'F', '014-2823661');
+INSERT INTO customer VALUES (8009, 6009, 'Bruce', 'Hansen', 'M', '019-2936352');
+INSERT INTO customer VALUES (8010, 6010, 'Suzanne', 'Hogan', 'F', '012-3836212');
 
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8001, 3071, 6001, 'Levi', 'Young', 'M', '012-3872543');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8002, 3073, 'Levi', 'Young', 'M', '012-3872543');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8003, 3074, 'Levi', 'Young', 'M', '012-3872543');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8004, 3080, 'Levi', 'Young', 'M', '012-3872543');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8005, 3072, 6002, 'Emma', 'Sanchez', 'F', '017-2930451');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8006, 3075, 6003, 'Daniel', 'Hill', 'M', '014-2394622');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8007, 3076, 'Daniel', 'Hill', 'M', '014-2394622');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8008, 3077, 6004, 'Scarlett', 'Flores', 'F', '019-2735321');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8009, 3078, 6005, 'Logan', 'Smith', 'M', '011-2934212');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8010, 3079, 'Logan', 'Smith', 'M', '011-2934212');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8011, 3081, 6006, 'Cynthia', 'Vanne', 'F', '013-2337362');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8012, 3082, 'Cynthia', 'Vanne', 'F', '013-2337362');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8013, 3083, 'Cynthia', 'Vanne', 'F', '013-2337362');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8014, 3084, 6007, 'Josh', 'Malone', 'M', '017-3736213');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8015, 3085, 'Josh', 'Malone', 'M', '017-3736213');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8016, 3086, 'Josh', 'Malone', 'M', '017-3736213');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8017, 3087, 6008, 'Elissa', 'Cruz', 'F', '014-2823661');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8018, 3088, 6009, 'Bruce', 'Hansen', 'M', '019-2936352');
-INSERT INTO customer (customer_id, house_id, first_name, last_name, gender, phone_number) VALUES (8019, 3089, 'Bruce', 'Hansen', 'M', '019-2936352');
-INSERT INTO customer (customer_id, house_id, gift_id, first_name, last_name, gender, phone_number) VALUES (8020, 3090, 6010, 'Suzanne', 'Hogan', 'F', '012-3836212');
+INSERT INTO house VALUES (3071, 8001, 7021, 'CD', 'Palmville Resort Condominium, 3, Jalan Lagoon Timur (9/1)', 'Bandar Sunway', 'Subang Jaya', 'Selangor', 47500);
+INSERT INTO house VALUES (3072, 8005, 7022, 'AP', 'Jalan PJS 11/6', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47500);
+INSERT INTO house VALUES (3073, 8002, 7023, 'SD', 'One Park USJ', 'Bandar Sunway', 'Subang Jaya', 'Selangor', 40150);
+INSERT INTO house VALUES (3074, 8003, 7024, 'BG', 'Lakeview Bungalows, 43A, Saujana Resort', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
+INSERT INTO house VALUES (3075, 8006, 7025, 'SD', 'Persiaran Mimbar', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
+INSERT INTO house VALUES (3076, 8007, 7026, 'AP', 'Pangsapuri Lagoon Perdana, Jalan PJS 9/1', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47500);
+INSERT INTO house VALUES (3077, 8008, 7027, 'CD', 'G1, Impian Meridian Condominium, Jalan Subang 1', 'USJ 1', 'Subang Jaya', 'Selangor', 47600);
+INSERT INTO house VALUES (3078, 8009, 7028, 'AP', 'Jalan PJS 10/11A', 'PJS 10', 'Petaling Jaya', 'Selangor', 46150);
+INSERT INTO house VALUES (3079, 8010, 7029, 'SD', '4, Jalan Aman Perdana 3c/Ku5', 'Aman Perdana', 'Klang', 'Selangor', 42200);
+INSERT INTO house VALUES (3080, 8004, 7030, 'BG', '2, Persiaran Titiwangsa, Titiwangsa', 'Kuala Lumpur', 'Titwangsa', 'Selangor', 53200);
+INSERT INTO house VALUES (3081, 8008, 7031, 'SD', 'Jalan 13/1 Seksyen 13', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 46200);
+INSERT INTO house VALUES (3082, 8005, 7032, 'BG', 'C-05-02, Utropolis Suites, Jalan Kontraktor U1/14, Seksyen U1', 'Bukit Jelutong', 'Shah Alam', 'Selangor', 40150);
+INSERT INTO house VALUES (3083, 8001, 7033, 'AP', 'A-21-06, The Arc Persiaran Bestari', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
+INSERT INTO house VALUES (3084, 8004, 7034, 'CD', 'Sunway Gandaria Residences', 'Hulu Langat', 'Bangi', 'Selangor', 43650);
+INSERT INTO house VALUES (3085, 8009, 7035, 'SD', 'Lingkaran Cyber Point Timur, Cyber 12', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
+INSERT INTO house VALUES (3086, 8007, 7036, 'SD', 'Jalan PJU 8/8A', 'Damansara Perdana', 'Petaling Jaya', 'Selangor', 47820);
+INSERT INTO house VALUES (3087, 8003, 7037, 'CD', 'Saville Cheras No.1, Persiaran Sri Raya, Taman Sri Raya', 'Hulu Langat', 'Cheras', 'Selangor', 43200);
+INSERT INTO house VALUES (3088, 8006, 7038, 'SD', 'Jalan Teknokrat 7', 'Cyberjaya', 'Putrajaya', 'Selangor', 63000);
+INSERT INTO house VALUES (3089, 8010, 7039, 'AP', 'No. 2 Jalan Setia Dagang', 'Setia Alam', 'Shah Alam', 'Selangor', 40170);
+INSERT INTO house VALUES (3090, 8002, 7040, 'BG', 'Pusat Perdagangan Icon City, No 1B, Jalan SS8/39, SS8', 'Bandar Sunway', 'Petaling Jaya', 'Selangor', 47300);
