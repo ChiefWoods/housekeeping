@@ -1,6 +1,7 @@
 DROP INDEX index_house_type;
 DROP INDEX index_service_hours;
 DROP INDEX index_commission_rate;
+
 DROP VIEW view_employee;
 DROP VIEW view_house;
 
@@ -185,6 +186,8 @@ INSERT INTO service VALUES (7037, 3087, 2040, '24/09/2022');
 INSERT INTO service VALUES (7038, 3088, 2060, '02/09/2022');
 INSERT INTO service VALUES (7039, 3089, 2080, '16/04/2022');
 INSERT INTO service VALUES (7040, 3090, 2100, '08/08/2022');
+
+-- HOUSE_TYPE from table HOUSE, SERVICE_HOURS and COMMISSION_RATE from table EMPLOYEE is indexed to allow for easier reference 
 
 CREATE INDEX index_house_type
 ON house(house_type);
