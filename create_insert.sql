@@ -49,7 +49,7 @@ CREATE TABLE customer (
   first_name VARCHAR(32) NOT NULL,
   last_name VARCHAR(32) NOT NULL,
   gender CHAR(1), CONSTRAINT check_customer_gender CHECK (gender IN ('M', 'F')),
-  phone_number VARCHAR(32) NOT NULL
+  phone_number VARCHAR(32) NOT NULL, CONSTRAINT unique_customer_number UNIQUE (phone_number)
 );
 
 CREATE TABLE house (
