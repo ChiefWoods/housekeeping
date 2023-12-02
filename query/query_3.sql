@@ -1,4 +1,6 @@
--- SUNNY Housekeeping wants to keep track of all male supervisors with names that begin with 'J' or 'L', whose employees reside in the town Petaling Jaya or Puchong Jaya, including those that are not assigned to any services.
+-- SUNNY Housekeeping wants to keep track of all male supervisors with names that begin with 'J' or 'L',
+-- whose employees reside in the town Petaling Jaya or Puchong Jaya, including those that are not assigned
+-- to any services.
 
 SELECT DISTINCT service.service_id "Service ID", supervisor.first_name "Supervisor First Name", supervisor.last_name "Supervisor Last Name" 
 FROM employee, service
