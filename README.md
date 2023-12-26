@@ -12,15 +12,19 @@ Built together with Jiah Hao.
 
 ## Built With
 
-### Tools and Languages
+### Languages
 
-- [![SQL](https://img.shields.io/badge/SQL-%233A3632?style=for-the-badge&logo=oracle&logoColor=%23C74634&labelColor=%233A3632)](https://www.oracle.com/)
+- [![SQL](https://img.shields.io/badge/SQL-3A3632?style=for-the-badge&logo=oracle&logoColor=C74634)](https://apex.oracle.com/en/)
+
+### Tools
+
+- [![Oracle Apex](https://img.shields.io/badge/Oracle%20Apex-3A3632?style=for-the-badge&logo=oracle&logoColor=C74634)](https://apex.oracle.com/en/)
 
 ## Getting Started
 
 ### Setup
 
-1. Clone the repository.
+1. Clone the repository
 ```
 git clone https://github.com/ChiefWoods/housekeeping.git
 ```
